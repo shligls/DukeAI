@@ -41,17 +41,6 @@ with PdfPages("housing_price_vs_features_analysis.pdf") as pdf:
             plt.title(f"House Price vs {col}", fontsize=12, fontweight="bold")  # Adding a title to each graph
             
             
-        
-        
-        # # Draw the scatter plot
-        # plt.scatter(df[factor], df[price_column], alpha=0.6, color="blue")
-        
-        # # Add title, axis labels, and a grid
-        # plt.title(f"House Price vs {factor}", fontsize=14, fontweight="bold")
-        # plt.xlabel(factor, fontsize=12)
-        # plt.ylabel(price_column, fontsize=12)
-        # plt.grid(True, linestyle="--", alpha=0.5)
-        
         # Adjust layout so labels don't get cut off
         plt.tight_layout()
         
