@@ -1,31 +1,41 @@
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-import numpy as np
-import pandas as pd
+import pandas as pd # libary for data analysis which is shorthanded to pd
+import matplotlib.pyplot as plt # libary for data visualization which is shorthanded to plt
+import seaborn as sns # libary for data visualization which is shorthanded to sns
+from matplotlib.backends.backend_pdf import PdfPages # libary for creating multi-page PDF files shorthanded to PdfPages
 
-# 1. Initialize the multi-page PDF file
-with PdfPages('multipage_plots.pdf') as pdf:
-    
-    # opens the file as a DataFrame organizing it into rows and columnns
-    df = pd.read_csv('train.csv')
-    
-    # Loop to generate a list for every column (-1 because the last column is the label column)
-    for i in range(len(df.columns)-1): 
-        # 2. Always create a fresh figure instance
-        fig, ax = plt.subplots(figsize=(8, 6))
-        
-#         # Generate dummy data and plot
-#         x = df[df.columns[i]]
-#         y = df[df.columns[-1]]  # Use the last column as y-values
-#         ax.plot(x, y, label=f'Wave {i}')
-#         ax.set_title(f'Graph Page {i+1}')
-#         ax.legend()
-        
-#         # 3. Save the current figure to the PDF file
-#         # 'bbox_inches="tight"' ensures labels don't get cut off
-#         pdf.savefig(fig, bbox_inches='tight')
-        
-#         # 4. CRITICAL: Explicitly close the figure to free RAM
-#         plt.close(fig)
+# Load the CSV file into a DataFrame. The 'keep_default_na=False' argument keeps empty strings as empty strings instead of converting them to NaN.
+df = pd.read_csv("train.csv", keep_default_na=False)  
 
-# print("PDF exported successfully!")
+# Identify the columns (features vs. target price)
+all_columns = df.columns    # decoupling the columns from the DataFrame making the code more memory effieceint
+feature_columns = all_columns[:-1]  # All columns except the last one
+price_column = all_columns[-1]       # The very last column (Price)
+
+# Create a multi-page PDF file
+with PdfPages("housing_analysis.pdf") as pdf:
+    
+    # Loop through each factor and generate a scatter plot
+    for factor in feature_columns:
+        
+        # Create a new figure for each page in the PDF
+        plt.figure(figsize=(8, 6))
+        
+        # Draw the scatter plot
+        plt.scatter(df[factor], df[price_column], alpha=0.6, color="blue")
+        
+        # Add title, axis labels, and a grid
+        plt.title(f"House Price vs {factor}", fontsize=14, fontweight="bold")
+        plt.xlabel(factor, fontsize=12)
+        plt.ylabel(price_column, fontsize=12)
+        plt.grid(True, linestyle="--", alpha=0.5)
+        
+        # Adjust layout so labels don't get cut off
+        plt.tight_layout()
+        
+        # Save the current figure as a new page in the PDF
+        pdf.savefig()
+        
+        # Clear the memory by closing the figure
+        plt.close()
+
+print("PDF report 'housing_analysis.pdf' generated successfully!")
